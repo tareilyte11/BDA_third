@@ -1,0 +1,28 @@
+services:
+  main-db:
+    image: mongo:7
+    container_name: main-db
+    ports:
+      - "27017:27017"
+    command: mongod --replSet rs0 --bind_ip_all
+    volumes:
+      - main_data:/data/db
+
+  replica1:
+    image: mongo:7
+    container_name: replica1
+    command: mongod --replSet rs0 --bind_ip_all
+    volumes:
+      - replica1_data:/data/db
+
+  replica2:
+    image: mongo:7
+    container_name: replica2
+    command: mongod --replSet rs0 --bind_ip_all
+    volumes:
+      - replica2_data:/data/db
+
+volumes:
+  main_data:
+  replica1_data:
+  replica2_data:
