@@ -6,6 +6,7 @@ DATABASE_NAME = "main-db"
 COLLECTION_NAME = "filtered_AIS_information"
 
 TIME_FIELD = "# Timestamp"
+TIME_FORMAT = "%d/%m/%Y %H:%M:%S"
 
 
 def main():
@@ -21,6 +22,7 @@ def main():
                 "__timestamp_dt": {
                     "$dateFromString": {
                         "dateString": f"${TIME_FIELD}",
+                        "format": TIME_FORMAT,
                         "onError": None,
                         "onNull": None
                     }
