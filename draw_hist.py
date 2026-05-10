@@ -39,7 +39,7 @@ def main():
     print(delta_seconds.describe())
 
     # remove extreme outliers for readable histogram
-    histogram_data = delta_seconds[delta_seconds <= 3600]
+    histogram_data = delta_seconds[delta_seconds <= 60]
 
     plt.figure(figsize=(12, 6))
 
