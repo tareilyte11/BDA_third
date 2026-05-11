@@ -11,6 +11,8 @@ services:
   replica1:
     image: mongo:7
     container_name: replica1
+    ports:
+      - "27018:27017"
     command: mongod --replSet rs0 --bind_ip_all
     volumes:
       - replica1_data:/data/db
@@ -18,6 +20,8 @@ services:
   replica2:
     image: mongo:7
     container_name: replica2
+    ports:
+      - "27019:27017"
     command: mongod --replSet rs0 --bind_ip_all
     volumes:
       - replica2_data:/data/db
