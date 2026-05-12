@@ -6,6 +6,8 @@ MONGO_URI = "mongodb://localhost:27017/?directConnection=true"
 
 DATABASE_NAME = "main-db"
 COLLECTION_NAME = "filtered_AIS_information"
+TIME_FIELD = "# Timestamp"
+TIME_FORMAT = "%d/%m/%Y %H:%M:%S"
 
 
 def main():
