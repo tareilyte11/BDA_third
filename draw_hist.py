@@ -24,7 +24,10 @@ def main():
         }
     )
 
-    delta_values = [doc["delta_t_ms"] for doc in delta_records]
+    delta_values = []
+
+    for doc in delta_records:
+        delta_values.append(doc["delta_t_ms"])
 
     # convert to seconds
     delta_seconds = pd.Series(delta_values) / 1000
@@ -35,10 +38,10 @@ def main():
     #plot histogram
     plt.figure(figsize=(12, 6))
     plt.hist(filtered_data, bins=60)
-    plt.xlabel("Seconds")
-    plt.ylabel("Frequency")
+    plt.xlabel("Time Difference (seconds)")
+    plt.ylabel("Count")
     plt.ticklabel_format(style='plain', axis='y')
-    plt.title("Frequency of Delta Values")
+    plt.title("Distribution of Time Differences")
     plt.grid(True)
     plt.show()
     
