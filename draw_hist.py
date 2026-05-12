@@ -6,9 +6,6 @@ MONGO_URI = "mongodb://localhost:27017/?directConnection=true"
 
 DATABASE_NAME = "main-db"
 COLLECTION_NAME = "filtered_AIS_information"
-TIME_FIELD = "# Timestamp"
-TIME_FORMAT = "%d/%m/%Y %H:%M:%S"
-
 
 def main():
     client = MongoClient(MONGO_URI)
@@ -17,7 +14,7 @@ def main():
 
     print("Loading values...")
 
-    cursor = collection.find(
+    delta_records = collection.find(
         {
             "delta_t_ms": {"$gt": 0}
         },
@@ -27,7 +24,7 @@ def main():
         }
     )
 
-    delta_values = [doc["delta_t_ms"] for doc in cursor]
+    delta_values = [doc["delta_t_ms"] for doc in delta_records]
 
     # convert to seconds
     delta_seconds = pd.Series(delta_values) / 1000
