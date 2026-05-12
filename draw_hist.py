@@ -14,13 +14,11 @@ def main():
     db = client[DATABASE_NAME]
     collection = db[COLLECTION_NAME]
 
-    print("Loading delta_t_ms values...")
+    print("Loading values...")
 
     cursor = collection.find(
         {
-            "delta_t_ms": {
-                "$gt": 0
-            }
+            "delta_t_ms": {"$gt": 0}
         },
         {
             "_id": 0,
@@ -30,27 +28,24 @@ def main():
 
     delta_values = [doc["delta_t_ms"] for doc in cursor]
 
-    print(f"Loaded {len(delta_values)} delta_t values")
-
-    # convert ms -> seconds
+    # convert to seconds
     delta_seconds = pd.Series(delta_values) / 1000
 
     print("\nStatistics:")
-    print(delta_seconds.describe())
 
-    # remove extreme outliers for readable histogram
-    histogram_data = delta_seconds[delta_seconds <= 60]
+    # remove outliers
+    filtered_data = delta_seconds[delta_seconds <= 60]
 
     plt.figure(figsize=(12, 6))
 
     plt.hist(
-        histogram_data,
-        bins=100
+        filtered_data,
+        bins=60
     )
 
-    plt.xlabel("Delta t (seconds)")
+    plt.xlabel("Seconds)")
     plt.ylabel("Frequency")
-    plt.title("Histogram of AIS Delta t Values")
+    plt.title("Histogram of Delta Values")
 
     plt.grid(True)
 
