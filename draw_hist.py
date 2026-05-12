@@ -10,7 +10,6 @@ COLLECTION_NAME = "filtered_AIS_information"
 
 def main():
     client = MongoClient(MONGO_URI)
-
     db = client[DATABASE_NAME]
     collection = db[COLLECTION_NAME]
 
@@ -43,6 +42,7 @@ def main():
 
     plt.xlabel("Seconds")
     plt.ylabel("Frequency")
+    plt.ticklabel_format(style='plain', axis='y')
     plt.title("Histogram of Delta Values")
     plt.grid(True)
     plt.show()
