@@ -31,8 +31,6 @@ def main():
     # convert to seconds
     delta_seconds = pd.Series(delta_values) / 1000
 
-    print("\nStatistics:")
-
     # remove outliers
     filtered_data = delta_seconds[delta_seconds <= 60]
 
@@ -43,19 +41,12 @@ def main():
         bins=60
     )
 
-    plt.xlabel("Seconds)")
+    plt.xlabel("Seconds")
     plt.ylabel("Frequency")
     plt.title("Histogram of Delta Values")
-
     plt.grid(True)
-
-    plt.savefig("delta_t_histogram.png", dpi=300)
-
     plt.show()
-
-    print("\nHistogram saved:")
-    print("delta_t_histogram.png")
-
+    
     client.close()
 
 
