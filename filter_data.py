@@ -41,9 +41,13 @@ def _to_number(field, number_type):
 
 
 def build_validation_stages():
-    required_field_filter = {
-        field: {"$exists": True, "$nin": [None, ""]} for field in REQUIRED_FIELDS
-    }
+    required_field_filter = {}
+
+    for field in REQUIRED_FIELDS:
+        required_field_filter[field] = {
+            "$exists": True,
+            "$nin": [None, ""]
+        }
 
     return [
         {"$match": required_field_filter},
