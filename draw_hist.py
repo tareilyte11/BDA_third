@@ -33,17 +33,13 @@ def main():
     # remove outliers
     filtered_data = delta_seconds[delta_seconds <= 60]
 
+    #plot histogram
     plt.figure(figsize=(12, 6))
-
-    plt.hist(
-        filtered_data,
-        bins=60
-    )
-
+    plt.hist(filtered_data, bins=60)
     plt.xlabel("Seconds")
     plt.ylabel("Frequency")
     plt.ticklabel_format(style='plain', axis='y')
-    plt.title("Histogram of Delta Values")
+    plt.title("Frequency of Delta Values")
     plt.grid(True)
     plt.show()
     
