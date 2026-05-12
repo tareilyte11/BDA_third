@@ -73,10 +73,6 @@ def build_validation_stages():
 
 
 def build_valid_mmsi_pipeline():
-    """
-    Finds vessels with enough valid AIS points. Counting happens after numeric
-    conversion and range validation, so the threshold matches inserted records.
-    """
 
     return [
         *build_validation_stages(),
@@ -111,7 +107,6 @@ def build_filter_pipeline(mmsi_values):
 
 
 def get_valid_mmsi_values(source):
-    print("Finding vessels with enough valid AIS points...")
     cursor = source.aggregate(
         build_valid_mmsi_pipeline(),
         allowDiskUse=True,
@@ -179,17 +174,13 @@ def worker(worker_id, mmsi_values):
 
 
 def insert_filtered_records_parallel(valid_mmsi_values):
-    worker_count = min(NUM_WORKERS, len(valid_mmsi_values))
-
-    if worker_count == 0:
-        return 0
-
+    
     total_inserted = 0
 
-    with ProcessPoolExecutor(max_workers=worker_count) as executor:
+    with ProcessPoolExecutor(max_workers=NUM_WORKERS) as executor:
         futures = [
             executor.submit(worker, worker_id, mmsi_chunk)
-            for worker_id, mmsi_chunk in enumerate(chunk_values(valid_mmsi_values, worker_count))
+            for worker_id, mmsi_chunk in enumerate(chunk_values(valid_mmsi_values, NUM_WORKERS))
         ]
 
         for future in as_completed(futures):
@@ -198,34 +189,17 @@ def insert_filtered_records_parallel(valid_mmsi_values):
     return total_inserted
 
 
-# def create_source_indexes(source):
-#     print("Creating source indexes...")
-#     source.create_index([("MMSI", ASCENDING)])
-#     print("Source indexes created.")
-
-
-# def create_filtered_indexes(filtered):
-#     print("Creating filtered collection indexes...")
-#     filtered.create_index([("MMSI", ASCENDING)])
-#     print("Filtered collection indexes created.")
-
-
 def main():
-    print("Noise filtering started.")
 
     client = MongoClient(MONGO_URI)
     db = client[DATABASE_NAME]
     source = db[MAIN_COLLECTION]
     filtered = db[FILTERED_COLLECTION]
 
-    # create_source_indexes(source)
-
     valid_mmsi_values = get_valid_mmsi_values(source)
 
     print("Filtering and inserting records...")
     total_inserted = insert_filtered_records_parallel(valid_mmsi_values)
-
-    # create_filtered_indexes(filtered)
 
     client.close()
 
