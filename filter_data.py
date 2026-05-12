@@ -202,12 +202,12 @@ def main():
 
     valid_mmsi_values = get_valid_mmsi_values(source)
 
-    print("Filtering and inserting records...")
+    print("Filtering and inserting started")
     total_inserted = insert_filtered_records_parallel(valid_mmsi_values)
 
     client.close()
 
-    print(f"Filtering finished. Total inserted: {total_inserted}")
+    print(f"Total inserted: {total_inserted}")
 
 
 if __name__ == "__main__":
