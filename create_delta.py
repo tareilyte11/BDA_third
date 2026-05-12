@@ -8,13 +8,12 @@ COLLECTION_NAME = "filtered_AIS_information"
 TIME_FIELD = "# Timestamp"
 TIME_FORMAT = "%d/%m/%Y %H:%M:%S"
 
-
 def main():
     client = MongoClient(MONGO_URI)
     db = client[DATABASE_NAME]
     collection = db[COLLECTION_NAME]
 
-    print("Calculating delta_t_ms...")
+    print("Execusion started")
 
     pipeline = [
         {
@@ -78,7 +77,7 @@ def main():
 
     collection.aggregate(pipeline, allowDiskUse=True)
 
-    print("Finished. delta_t_ms added to filtered collection.")
+    print("Delta's added to filtered collection.")
 
     client.close()
 
