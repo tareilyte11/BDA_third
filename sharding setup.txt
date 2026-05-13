@@ -1,0 +1,79 @@
+docker compose down -v
+
+docker compose up -d
+docker ps
+
+#######################################################
+#######################################################
+
+docker exec -it configsvr mongosh --port 27019
+
+rs.initiate({
+  _id: "configReplSet",
+  configsvr: true,
+  members: [
+    { _id: 0, host: "configsvr:27019" }
+  ]
+})
+
+#######################################################
+#######################################################
+
+docker exec -it shard1a mongosh --port 27018
+
+rs.initiate({
+  _id: "shard1ReplSet",
+  members: [
+    { _id: 0, host: "shard1a:27018" },
+    { _id: 1, host: "shard1b:27018" },
+    { _id: 2, host: "shard1c:27018" }
+  ]
+})
+
+#######################################################
+#######################################################
+
+docker exec -it shard2a mongosh --port 27020
+
+rs.initiate({
+  _id: "shard2ReplSet",
+  members: [
+    { _id: 0, host: "shard2a:27020" },
+    { _id: 1, host: "shard2b:27020" },
+    { _id: 2, host: "shard2c:27020" }
+  ]
+})
+
+#######################################################
+#######################################################
+
+docker exec -it mongos mongosh
+
+sh.addShard("shard1ReplSet/shard1a:27018,shard1b:27018,shard1c:27018")
+
+sh.addShard("shard2ReplSet/shard2a:27020,shard2b:27020,shard2c:27020")
+
+#######################################################
+######################   enable sharding   ############
+
+sh.enableSharding("aisdb")
+
+sh.shardCollection("aisdb.AIS_information", { _id: "hashed" })
+
+sh.status()
+
+
+
+#######################################################
+######### FOE VIDEO ###############################
+#######################################################
+
+# show distribution:
+use aisdb
+db.AIS_information.countDocuments()
+
+in bash: docker stop shard1a
+
+than again in Java:
+sh.status()
+db.AIS_information.countDocuments()
