@@ -1,0 +1,64 @@
+services:
+
+  # ---------------- CONFIG SERVER ----------------
+  configsvr:
+    image: mongo:6.0
+    container_name: configsvr
+    command: mongod --configsvr --replSet configReplSet --port 27019 --bind_ip_all
+    ports:
+      - "27019:27019"
+
+
+  # ---------------- SHARD 1 REPLICA SET ----------------
+  shard1a:
+    image: mongo:6.0
+    container_name: shard1a
+    command: mongod --shardsvr --replSet shard1ReplSet --port 27018 --bind_ip_all
+    ports:
+      - "27018:27018"
+
+  shard1b:
+    image: mongo:6.0
+    container_name: shard1b
+    command: mongod --shardsvr --replSet shard1ReplSet --port 27018 --bind_ip_all
+
+  shard1c:
+    image: mongo:6.0
+    container_name: shard1c
+    command: mongod --shardsvr --replSet shard1ReplSet --port 27018 --bind_ip_all
+
+
+  # ---------------- SHARD 2 REPLICA SET ----------------
+  shard2a:
+    image: mongo:6.0
+    container_name: shard2a
+    command: mongod --shardsvr --replSet shard2ReplSet --port 27020 --bind_ip_all
+    ports:
+      - "27020:27020"
+
+  shard2b:
+    image: mongo:6.0
+    container_name: shard2b
+    command: mongod --shardsvr --replSet shard2ReplSet --port 27020 --bind_ip_all
+
+  shard2c:
+    image: mongo:6.0
+    container_name: shard2c
+    command: mongod --shardsvr --replSet shard2ReplSet --port 27020 --bind_ip_all
+
+
+  # ---------------- MONGOS ROUTER ----------------
+  mongos:
+    image: mongo:6.0
+    container_name: mongos
+    depends_on:
+      - configsvr
+      - shard1a
+      - shard1b
+      - shard1c
+      - shard2a
+      - shard2b
+      - shard2c
+    command: mongos --configdb configReplSet/configsvr:27019 --bind_ip_all
+    ports:
+      - "27017:27017"
