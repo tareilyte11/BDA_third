@@ -4,7 +4,7 @@ import pandas as pd
 
 MONGO_URI = "mongodb://localhost:27017/?directConnection=true"
 
-DATABASE_NAME = "main-db"
+DATABASE_NAME = "aisdb"
 COLLECTION_NAME = "filtered_AIS_information"
 
 def main():
